@@ -129,15 +129,15 @@ export default function RegisterModal({ initialRole, onClose, onSwitchToLogin })
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xl">{currentConfig.icon}</span>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h2 className="text-xl font-bold text-slate-900 ">
                 Register as {currentConfig.label}
               </h2>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 text-sm">{currentConfig.description}</p>
+            <p className="text-slate-600  text-sm">{currentConfig.description}</p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white hover:bg-slate-200 dark:bg-slate-700 transition-all"
+            className="w-8 h-8 rounded-lg bg-slate-100  flex items-center justify-center text-slate-600  hover:text-slate-900   hover:bg-slate-200  transition-all"
           >
             ✕
           </button>
@@ -156,8 +156,8 @@ export default function RegisterModal({ initialRole, onClose, onSwitchToLogin })
               }}
               className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
                 role === r
-                  ? "bg-indigo-500/20 border border-indigo-500/50 text-slate-900 dark:text-white"
-                  : "bg-slate-100 dark:bg-slate-800/50 border border-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white hover:border-slate-600"
+                  ? "bg-indigo-500/20 border border-indigo-500/50 text-slate-900 "
+                  : "bg-slate-100  border border-slate-700/50 text-slate-600  hover:text-slate-900   hover:border-slate-600"
               }`}
             >
               {roleConfig[r].icon} {roleConfig[r].label}
@@ -171,7 +171,7 @@ export default function RegisterModal({ initialRole, onClose, onSwitchToLogin })
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-all ${
-                i < step ? "bg-indigo-500" : "bg-slate-200 dark:bg-slate-700"
+                i < step ? "bg-indigo-500" : "bg-slate-200 "
               }`}
             />
           ))}
@@ -181,7 +181,7 @@ export default function RegisterModal({ initialRole, onClose, onSwitchToLogin })
           {/* Step 1: Basic Info */}
           {step === 1 && (
             <div className="space-y-4">
-              <h3 className="text-slate-900 dark:text-white font-semibold text-sm uppercase tracking-wider">
+              <h3 className="text-slate-900  font-semibold text-sm uppercase tracking-wider">
                 Basic Information
               </h3>
               <div>
@@ -265,7 +265,7 @@ export default function RegisterModal({ initialRole, onClose, onSwitchToLogin })
           {/* Step 2: Organization */}
           {step === 2 && (
             <div className="space-y-4">
-              <h3 className="text-slate-900 dark:text-white font-semibold text-sm uppercase tracking-wider">
+              <h3 className="text-slate-900  font-semibold text-sm uppercase tracking-wider">
                 {role === "organization"
                   ? "Organization Details"
                   : "Organization (Optional)"}
@@ -378,7 +378,7 @@ export default function RegisterModal({ initialRole, onClose, onSwitchToLogin })
           {/* Step 3: Personal Details (member only) */}
           {step === 3 && role === "member" && (
             <div className="space-y-4">
-              <h3 className="text-slate-900 dark:text-white font-semibold text-sm uppercase tracking-wider">
+              <h3 className="text-slate-900  font-semibold text-sm uppercase tracking-wider">
                 Personal Details (optional)
               </h3>
               <div className="grid grid-cols-2 gap-3">
@@ -468,7 +468,7 @@ export default function RegisterModal({ initialRole, onClose, onSwitchToLogin })
           )}
         </form>
 
-        <div className="mt-5 text-center text-slate-600 dark:text-slate-400 text-sm">
+        <div className="mt-5 text-center text-slate-600  text-sm">
           Already have an account?{" "}
           <button
             onClick={onSwitchToLogin}

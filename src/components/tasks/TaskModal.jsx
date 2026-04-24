@@ -75,12 +75,12 @@ export default function TaskModal({ task, onClose, onSave }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-xl font-bold text-slate-900 ">
             {task ? "Edit Task" : "New Task"}
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white transition-all"
+            className="w-8 h-8 rounded-lg bg-slate-100  flex items-center justify-center text-slate-600  hover:text-slate-900   transition-all"
           >
             ✕
           </button>

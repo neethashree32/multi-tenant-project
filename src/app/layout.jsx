@@ -1,5 +1,4 @@
 import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata = {
   title: "NexusFlow — Modern Multi-Tenant Infrastructure",
@@ -9,11 +8,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-slate-50 dark:bg-[#030712] text-slate-900 dark:text-white antialiased min-h-screen">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+    <html lang="en">
+      <body className="bg-slate-50 text-slate-900 antialiased min-h-screen">
+        {children}
       </body>
     </html>
   );

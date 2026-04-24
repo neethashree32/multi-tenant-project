@@ -5,14 +5,14 @@ import { format } from "date-fns";
 import TaskModal from "./TaskModal";
 
 const statusConfig = {
-  todo: { label: "To Do", color: "bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-500/30" },
+  todo: { label: "To Do", color: "bg-slate-500/20 text-slate-700  border-slate-500/30" },
   in_progress: { label: "In Progress", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" },
   done: { label: "Done", color: "bg-green-500/20 text-green-300 border-green-500/30" },
   cancelled: { label: "Cancelled", color: "bg-red-500/20 text-red-300 border-red-500/30" },
 };
 
 const priorityConfig = {
-  low: { label: "Low", color: "bg-slate-500/20 text-slate-600 dark:text-slate-400 border-slate-500/20" },
+  low: { label: "Low", color: "bg-slate-500/20 text-slate-600  border-slate-500/20" },
   medium: { label: "Medium", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/20" },
   high: { label: "High", color: "bg-orange-500/20 text-orange-400 border-orange-500/20" },
   urgent: { label: "Urgent", color: "bg-red-500/20 text-red-400 border-red-500/20" },
@@ -67,10 +67,10 @@ export default function TasksPage({ user }) {
       {/* Header */}
       <div className="page-header flex items-start justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+          <h2 className="text-2xl font-bold text-slate-900  mb-1">
             {user.role === "member" ? "My Tasks" : "Task Management"}
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
+          <p className="text-slate-600  text-sm">
             {user.role === "member"
               ? "View your assigned and created tasks"
               : "Create, assign, and manage organization tasks"}
@@ -110,8 +110,8 @@ export default function TasksPage({ user }) {
               onClick={() => setFilter(s)}
               className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                 filter === s
-                  ? "bg-indigo-500/20 border border-indigo-500/50 text-slate-900 dark:text-white"
-                  : "bg-slate-100 dark:bg-slate-800/50 border border-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white"
+                  ? "bg-indigo-500/20 border border-indigo-500/50 text-slate-900 "
+                  : "bg-slate-100  border border-slate-700/50 text-slate-600  hover:text-slate-900  "
               }`}
             >
               {s === "all" ? "All" : s.replace("_", " ")}
@@ -121,17 +121,17 @@ export default function TasksPage({ user }) {
       </div>
 
       {/* Tasks Table */}
-      <div className="bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden">
+      <div className="bg-white  shadow-sm border border-slate-200  rounded-2xl overflow-hidden">
         {loading ? (
           <div className="p-8 space-y-3">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-14 bg-slate-100 dark:bg-slate-800/50 rounded-lg animate-pulse" />
+              <div key={i} className="h-14 bg-slate-100  rounded-lg animate-pulse" />
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">✅</div>
-            <p className="text-slate-700 dark:text-slate-300 font-semibold">No tasks found</p>
+            <p className="text-slate-700  font-semibold">No tasks found</p>
             <p className="text-slate-500 text-sm mt-1">
               {canManage ? "Create your first task to get started" : "No tasks assigned to you yet"}
             </p>
@@ -140,14 +140,14 @@ export default function TasksPage({ user }) {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-white/5">
-                  <th className="text-left px-5 py-3.5 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Task</th>
-                  <th className="text-left px-5 py-3.5 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Status</th>
-                  <th className="text-left px-5 py-3.5 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Priority</th>
-                  <th className="text-left px-5 py-3.5 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Created By</th>
-                  <th className="text-left px-5 py-3.5 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Due Date</th>
+                <tr className="border-b border-slate-200 ">
+                  <th className="text-left px-5 py-3.5 text-slate-600  text-xs font-semibold uppercase tracking-wider">Task</th>
+                  <th className="text-left px-5 py-3.5 text-slate-600  text-xs font-semibold uppercase tracking-wider">Status</th>
+                  <th className="text-left px-5 py-3.5 text-slate-600  text-xs font-semibold uppercase tracking-wider">Priority</th>
+                  <th className="text-left px-5 py-3.5 text-slate-600  text-xs font-semibold uppercase tracking-wider">Created By</th>
+                  <th className="text-left px-5 py-3.5 text-slate-600  text-xs font-semibold uppercase tracking-wider">Due Date</th>
                   {canManage && (
-                    <th className="text-right px-5 py-3.5 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Actions</th>
+                    <th className="text-right px-5 py-3.5 text-slate-600  text-xs font-semibold uppercase tracking-wider">Actions</th>
                   )}
                 </tr>
               </thead>
@@ -155,7 +155,7 @@ export default function TasksPage({ user }) {
                 {filtered.map((task) => (
                   <tr key={task.id} className="table-row">
                     <td className="px-5 py-4">
-                      <div className="text-slate-900 dark:text-white font-medium text-sm">{task.title}</div>
+                      <div className="text-slate-900  font-medium text-sm">{task.title}</div>
                       {task.description && (
                         <div className="text-slate-500 text-xs mt-0.5 truncate max-w-xs">
                           {task.description}
@@ -173,12 +173,12 @@ export default function TasksPage({ user }) {
                       </span>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-slate-700 dark:text-slate-300 text-sm">
+                      <span className="text-slate-700  text-sm">
                         {task.createdByName || "—"}
                       </span>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-slate-600 dark:text-slate-400 text-sm">
+                      <span className="text-slate-600  text-sm">
                         {task.dueDate
                           ? format(new Date(task.dueDate), "MMM d, yyyy")
                           : "—"}
@@ -192,7 +192,7 @@ export default function TasksPage({ user }) {
                               setEditTask(task);
                               setShowModal(true);
                             }}
-                            className="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white hover:bg-indigo-500/20 transition-all"
+                            className="p-1.5 rounded-lg bg-slate-200  text-slate-600  hover:text-slate-900   hover:bg-indigo-500/20 transition-all"
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,7 +202,7 @@ export default function TasksPage({ user }) {
                           {(user.role === "organization" || task.createdById === user.userId) && (
                             <button
                               onClick={() => setDeleteId(task.id)}
-                              className="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                              className="p-1.5 rounded-lg bg-slate-200  text-slate-600  hover:text-red-400 hover:bg-red-500/10 transition-all"
                               title="Delete"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,8 +237,8 @@ export default function TasksPage({ user }) {
       {deleteId && (
         <div className="modal-overlay">
           <div className="modal-box max-w-sm">
-            <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-2">Delete Task?</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mb-6">
+            <h3 className="text-slate-900  font-bold text-lg mb-2">Delete Task?</h3>
+            <p className="text-slate-600  text-sm mb-6">
               This action cannot be undone. The task and all its history will be permanently deleted.
             </p>
             <div className="flex gap-3">

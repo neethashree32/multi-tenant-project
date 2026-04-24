@@ -1,12 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import ThemeToggle from "@/components/ThemeToggle";
 
 const roleColors = {
-  organization: "from-indigo-500 to-purple-600",
-  admin: "from-sky-500 to-blue-600",
-  member: "from-purple-500 to-pink-600",
+  organization: "bg-indigo-600",
+  admin: "bg-sky-600",
+  member: "bg-fuchsia-600",
 };
 
 export default function TopBar({ user }) {
@@ -25,34 +24,32 @@ export default function TopBar({ user }) {
     .toUpperCase()
     .slice(0, 2);
 
-  const gradient = roleColors[user.role] || "from-indigo-500 to-purple-600";
+  const bgColor = roleColors[user.role] || "bg-indigo-600";
 
   return (
-    <header className="h-16 bg-white dark:bg-slate-900/50 border-b border-slate-200 dark:border-white/5 px-6 flex items-center justify-between flex-shrink-0">
+    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between flex-shrink-0">
       <div className="flex items-center gap-3">
-        <h1 className="text-slate-900 dark:text-white font-semibold text-base">
-          Welcome back,{" "}
-          <span className="gradient-text">{user.name.split(" ")[0]}</span>
+        <h1 className="text-slate-700 font-medium text-base">
+          Dashboard /{" "}
+          <span className="text-slate-900 font-bold">{user.name.split(" ")[0]}</span>
         </h1>
       </div>
 
       <div className="flex items-center gap-4">
         <div className="text-right hidden sm:block">
-          <p className="text-slate-900 dark:text-white text-sm font-medium">{user.name}</p>
-          <p className="text-slate-600 dark:text-slate-400 text-xs">{user.email}</p>
+          <p className="text-slate-900 text-sm font-bold">{user.name}</p>
+          <p className="text-slate-500 text-xs">{user.email}</p>
         </div>
 
-        <ThemeToggle />
-
         <div
-          className={`w-9 h-9 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-slate-900 dark:text-white font-bold text-sm flex-shrink-0`}
+          className={`w-9 h-9 rounded-full ${bgColor} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}
         >
           {initials}
         </div>
 
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white hover:bg-slate-200 dark:bg-slate-700 transition-all text-sm font-medium"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all text-sm font-bold"
         >
           <svg
             className="w-4 h-4"

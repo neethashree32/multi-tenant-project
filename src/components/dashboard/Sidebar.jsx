@@ -27,9 +27,9 @@ const navItems = {
 };
 
 const roleBadge = {
-  organization: { label: "Organization", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500/30" },
-  admin: { label: "Admin", color: "bg-sky-500/20 text-sky-300 border-sky-500/30" },
-  member: { label: "Member", color: "bg-purple-500/20 text-purple-300 border-purple-500/30" },
+  organization: { label: "Organization", color: "bg-indigo-50 text-indigo-600 border-indigo-100" },
+  admin: { label: "Admin", color: "bg-sky-50 text-sky-600 border-sky-100" },
+  member: { label: "Member", color: "bg-fuchsia-50 text-fuchsia-600 border-fuchsia-100" },
 };
 
 export default function Sidebar({ role }) {
@@ -38,15 +38,15 @@ export default function Sidebar({ role }) {
   const badge = roleBadge[role];
 
   return (
-    <aside className="w-64 bg-white/80 dark:bg-slate-900/80 border-r border-slate-200 dark:border-white/5 flex flex-col">
+    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
       {/* Logo */}
-      <div className="px-5 py-6 border-b border-slate-200 dark:border-white/5">
+      <div className="px-5 py-6 border-b border-slate-100">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 bg-white dark:bg-slate-900 shadow-md">
-            <img src="/logo.png" alt="NexusFlow Logo" className="w-full h-full object-cover scale-110" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 bg-slate-50 border border-slate-100 shadow-sm p-1.5">
+            <img src="/logo.png" alt="NexusFlow Logo" className="w-full h-full object-contain" />
           </div>
           <div>
-            <div className="text-slate-900 dark:text-white font-black text-lg leading-tight tracking-tight">NexusFlow</div>
+            <div className="text-slate-900 font-bold text-lg leading-tight tracking-tight">NexusFlow</div>
             <div className={`text-[10px] px-2 py-0.5 rounded-full border inline-flex mt-0.5 font-bold uppercase tracking-wider ${badge.color}`}>
               {badge.label}
             </div>
@@ -55,7 +55,7 @@ export default function Sidebar({ role }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
         {items.map((item) => {
           const isActive =
             item.href === "/dashboard"
@@ -75,9 +75,9 @@ export default function Sidebar({ role }) {
       </nav>
 
       {/* Bottom */}
-      <div className="px-3 py-4 border-t border-slate-200 dark:border-white/5">
-        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest text-center">
-          NexusFlow v1.0 • Enterprise Infrastructure
+      <div className="px-3 py-4 border-t border-slate-100">
+        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">
+          NexusFlow v1.0 • Stable Release
         </div>
       </div>
     </aside>

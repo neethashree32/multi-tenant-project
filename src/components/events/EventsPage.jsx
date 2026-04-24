@@ -6,7 +6,7 @@ import { format } from "date-fns";
 const statusConfig = {
   upcoming: { label: "Upcoming", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" },
   ongoing: { label: "Ongoing", color: "bg-green-500/20 text-green-300 border-green-500/30" },
-  completed: { label: "Completed", color: "bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-500/30" },
+  completed: { label: "Completed", color: "bg-slate-500/20 text-slate-700  border-slate-500/30" },
   cancelled: { label: "Cancelled", color: "bg-red-500/20 text-red-300 border-red-500/30" },
 };
 
@@ -128,8 +128,8 @@ export default function EventsPage({ user }) {
     <div>
       <div className="page-header flex items-start justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Events</h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
+          <h2 className="text-2xl font-bold text-slate-900  mb-1">Events</h2>
+          <p className="text-slate-600  text-sm">
             {canManage ? "Create and manage organization events" : "View upcoming and past events"}
           </p>
         </div>
@@ -151,8 +151,8 @@ export default function EventsPage({ user }) {
             onClick={() => setFilter(s)}
             className={`px-3 py-2 rounded-lg text-xs font-medium transition-all capitalize ${
               filter === s
-                ? "bg-indigo-500/20 border border-indigo-500/50 text-slate-900 dark:text-white"
-                : "bg-slate-100 dark:bg-slate-800/50 border border-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white"
+                ? "bg-indigo-500/20 border border-indigo-500/50 text-slate-900 "
+                : "bg-slate-100  border border-slate-700/50 text-slate-600  hover:text-slate-900  "
             }`}
           >
             {s}
@@ -164,13 +164,13 @@ export default function EventsPage({ user }) {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-white/5 rounded-2xl p-6 h-48 animate-pulse" />
+            <div key={i} className="bg-white  shadow-sm border border-slate-200  rounded-2xl p-6 h-48 animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-white/5 rounded-2xl text-center py-16">
+        <div className="bg-white  shadow-sm border border-slate-200  rounded-2xl text-center py-16">
           <div className="text-5xl mb-4">📅</div>
-          <p className="text-slate-700 dark:text-slate-300 font-semibold">No events found</p>
+          <p className="text-slate-700  font-semibold">No events found</p>
           <p className="text-slate-500 text-sm mt-1">
             {canManage ? "Create your first event" : "No events scheduled"}
           </p>
@@ -178,7 +178,7 @@ export default function EventsPage({ user }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((event) => (
-            <div key={event.id} className="bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-white/5 rounded-2xl p-5 hover:border-indigo-500/30 transition-all group">
+            <div key={event.id} className="bg-white  shadow-sm border border-slate-200  rounded-2xl p-5 hover:border-indigo-500/30 transition-all group">
               <div className="flex items-start justify-between mb-3">
                 <span className={`badge border ${statusConfig[event.status].color}`}>
                   {statusConfig[event.status].label}
@@ -187,7 +187,7 @@ export default function EventsPage({ user }) {
                   <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => openEdit(event)}
-                      className="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white hover:bg-indigo-500/20 transition-all"
+                      className="p-1.5 rounded-lg bg-slate-200  text-slate-600  hover:text-slate-900   hover:bg-indigo-500/20 transition-all"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -196,7 +196,7 @@ export default function EventsPage({ user }) {
                     {(user.role === "organization" || event.createdById === user.userId) && (
                       <button
                         onClick={() => setDeleteId(event.id)}
-                        className="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                        className="p-1.5 rounded-lg bg-slate-200  text-slate-600  hover:text-red-400 hover:bg-red-500/10 transition-all"
                       >
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -207,24 +207,24 @@ export default function EventsPage({ user }) {
                 )}
               </div>
 
-              <h3 className="text-slate-900 dark:text-white font-bold text-base mb-2">{event.title}</h3>
+              <h3 className="text-slate-900  font-bold text-base mb-2">{event.title}</h3>
               {event.description && (
-                <p className="text-slate-600 dark:text-slate-400 text-sm mb-3 line-clamp-2">{event.description}</p>
+                <p className="text-slate-600  text-sm mb-3 line-clamp-2">{event.description}</p>
               )}
 
               <div className="space-y-1.5 mt-3">
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-xs">
+                <div className="flex items-center gap-2 text-slate-600  text-xs">
                   <span>📅</span>
                   <span>{format(new Date(event.startDate), "MMM d, yyyy HH:mm")}</span>
                 </div>
                 {event.location && (
-                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-xs">
+                  <div className="flex items-center gap-2 text-slate-600  text-xs">
                     <span>📍</span>
                     <span>{event.location}</span>
                   </div>
                 )}
                 {event.maxAttendees && (
-                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-xs">
+                  <div className="flex items-center gap-2 text-slate-600  text-xs">
                     <span>👥</span>
                     <span>Max {event.maxAttendees} attendees</span>
                   </div>
@@ -244,12 +244,12 @@ export default function EventsPage({ user }) {
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h2 className="text-xl font-bold text-slate-900 ">
                 {editEvent ? "Edit Event" : "New Event"}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white"
+                className="w-8 h-8 rounded-lg bg-slate-100  flex items-center justify-center text-slate-600  hover:text-slate-900  "
               >
                 ✕
               </button>
@@ -320,8 +320,8 @@ export default function EventsPage({ user }) {
       {deleteId && (
         <div className="modal-overlay">
           <div className="modal-box max-w-sm">
-            <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-2">Delete Event?</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mb-6">This action cannot be undone.</p>
+            <h3 className="text-slate-900  font-bold text-lg mb-2">Delete Event?</h3>
+            <p className="text-slate-600  text-sm mb-6">This action cannot be undone.</p>
             <div className="flex gap-3">
               <button onClick={() => setDeleteId(null)} className="btn-secondary flex-1 py-2.5">Cancel</button>
               <button onClick={() => handleDelete(deleteId)}

@@ -45,17 +45,17 @@ export default function ComplaintModal({ onClose, onCreated }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Submit a Complaint</h2>
+          <h2 className="text-xl font-bold text-slate-900 ">Submit a Complaint</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-all"
+            className="w-8 h-8 rounded-lg bg-slate-100  flex items-center justify-center text-slate-500 hover:text-slate-900   transition-all"
           >
             ✕
           </button>
         </div>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-500 dark:text-red-400 text-sm mb-4">
+          <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-500  text-sm mb-4">
             {error}
           </div>
         )}
@@ -91,8 +91,8 @@ export default function ComplaintModal({ onClose, onCreated }) {
               <label
                 className={`flex items-center justify-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${
                   form.targetRole === "organization"
-                    ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
-                    : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600"
+                    ? "border-indigo-500 bg-indigo-50  text-indigo-600 "
+                    : "border-slate-200  bg-white  text-slate-600  hover:border-slate-300 "
                 }`}
               >
                 <input
@@ -108,8 +108,8 @@ export default function ComplaintModal({ onClose, onCreated }) {
               <label
                 className={`flex items-center justify-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${
                   form.targetRole === "admin"
-                    ? "border-sky-500 bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400"
-                    : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600"
+                    ? "border-sky-500 bg-sky-50  text-sky-600 "
+                    : "border-slate-200  bg-white  text-slate-600  hover:border-slate-300 "
                 }`}
               >
                 <input
@@ -125,7 +125,7 @@ export default function ComplaintModal({ onClose, onCreated }) {
             </div>
           </div>
 
-          <div className="mt-4 flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
+          <div className="mt-4 flex items-start gap-3 p-3 bg-slate-50  rounded-lg border border-slate-200 ">
             <input
               type="checkbox"
               id="anonymous"
@@ -133,8 +133,8 @@ export default function ComplaintModal({ onClose, onCreated }) {
               onChange={(e) => setForm({ ...form, isAnonymous: e.target.checked })}
               className="mt-1"
             />
-            <label htmlFor="anonymous" className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
-              <span className="font-medium block text-slate-900 dark:text-white mb-0.5">Submit Anonymously</span>
+            <label htmlFor="anonymous" className="text-sm text-slate-700  cursor-pointer">
+              <span className="font-medium block text-slate-900  mb-0.5">Submit Anonymously</span>
               Your name and identity will be hidden from the organization and admins.
             </label>
           </div>
