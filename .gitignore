@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.gemini
+.agents
+.agent
+multi-tenant-task-management-system
+*.log
+package-lock.json
+push_to_hf.mjs
+push_to_github.mjs
