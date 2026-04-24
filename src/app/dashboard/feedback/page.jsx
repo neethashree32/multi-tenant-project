@@ -2,6 +2,8 @@ import { requireAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import MemberFeedback from "@/components/feedback/MemberFeedback";
 
+export const dynamic = "force-dynamic";
+
 export default async function FeedbackPage() {
     const user = await requireAuth();
 
