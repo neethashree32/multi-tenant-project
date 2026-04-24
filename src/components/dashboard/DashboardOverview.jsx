@@ -16,7 +16,6 @@ const statCards = [
   { key: "tasks", label: "Total Tasks", icon: "✅", color: "bg-indigo-600" },
   { key: "events", label: "Events", icon: "📅", color: "bg-sky-600" },
   { key: "members", label: "Members", icon: "👥", color: "bg-emerald-600" },
-  { key: "complaints", label: "Complaints", icon: "📬", color: "bg-orange-600" },
 ];
 
 export default function DashboardOverview({ user }) {

@@ -1,71 +1,63 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const roleColors = {
-  organization: "bg-indigo-600",
-  admin: "bg-sky-600",
-  member: "bg-fuchsia-600",
+const navItems = {
+  organization: [
+    { href: "/dashboard", label: "Overview", icon: "🏠" },
+    { href: "/dashboard/tasks", label: "Tasks", icon: "📋" },
+    { href: "/dashboard/events", label: "Events", icon: "🎪" },
+    { href: "/dashboard/members", label: "Members", icon: "💠" },
+  ],
+  admin: [
+    { href: "/dashboard", label: "Overview", icon: "🏠" },
+    { href: "/dashboard/tasks", label: "Tasks", icon: "📋" },
+    { href: "/dashboard/events", label: "Events", icon: "🎪" },
+    { href: "/dashboard/members", label: "Members", icon: "💠" },
+  ],
+  member: [
+    { href: "/dashboard", label: "Overview", icon: "🏠" },
+    { href: "/dashboard/tasks", label: "Tasks", icon: "📋" },
+    { href: "/dashboard/events", label: "Events", icon: "🎪" },
+    { href: "/dashboard/feedback", label: "Feedback", icon: "📨" },
+  ],
 };
 
 export default function TopBar({ user }) {
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/");
-    router.refresh();
-  };
-
-  const initials = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-
-  const bgColor = roleColors[user.role] || "bg-indigo-600";
+  const pathname = usePathname();
+  const items = navItems[user.role] || [];
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between flex-shrink-0">
-      <div className="flex items-center gap-3">
-        <h1 className="text-slate-700 font-medium text-base">
-          Dashboard /{" "}
-          <span className="text-slate-900 font-bold">{user.name.split(" ")[0]}</span>
-        </h1>
+    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30">
+      <div className="flex items-center gap-1">
+        {items.map((item) => {
+          const isActive =
+            item.href === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${isActive
+                  ? "bg-slate-900 text-white shadow-lg"
+                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+            >
+              <span className="text-base">{item.icon}</span>
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="text-right hidden sm:block">
-          <p className="text-slate-900 text-sm font-bold">{user.name}</p>
-          <p className="text-slate-500 text-xs">{user.email}</p>
+        <div className="hidden sm:block text-right">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-md">
+            {user.role} workspace
+          </span>
         </div>
-
-        <div
-          className={`w-9 h-9 rounded-full ${bgColor} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}
-        >
-          {initials}
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all text-sm font-bold"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
-          Logout
-        </button>
       </div>
     </header>
   );

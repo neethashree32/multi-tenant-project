@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { tasks, events, complaints, users, taskAuditLogs } from "@/db/schema";
+import { tasks, events, users, taskAuditLogs } from "@/db/schema";
 import { eq, and, count, desc } from "drizzle-orm";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -13,7 +13,7 @@ export async function GET() {
 
     if (!currentUser.organizationId) {
       return NextResponse.json({
-        stats: { tasks: 0, events: 0, complaints: 0, members: 0 },
+        stats: { tasks: 0, events: 0, members: 0 },
         recentActivity: [],
       });
     }
@@ -31,12 +31,6 @@ export async function GET() {
       .select({ count: count() })
       .from(events)
       .where(eq(events.organizationId, orgId));
-
-    // Complaint counts
-    const [complaintCount] = await db
-      .select({ count: count() })
-      .from(complaints)
-      .where(eq(complaints.organizationId, orgId));
 
     // Member counts
     const [memberCount] = await db
@@ -69,7 +63,6 @@ export async function GET() {
       stats: {
         tasks: taskCount.count,
         events: eventCount.count,
-        complaints: complaintCount.count,
         members: memberCount.count,
       },
       recentActivity,

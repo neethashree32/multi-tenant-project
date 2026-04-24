@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function LoginModal({ onClose, onSwitchToRegister }) {
+export default function LoginModal({ onClose, onSwitchToRegister, isDropdown = false }) {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -33,78 +33,80 @@ export default function LoginModal({ onClose, onSwitchToRegister }) {
     }
   };
 
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div
-        className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+  const content = (
+    <div className={`bg-white ${isDropdown ? "" : "rounded-2xl p-8 w-full max-w-md shadow-2xl relative"}`}>
+      {!isDropdown && (
         <button
           onClick={onClose}
           className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
+      )}
 
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002-2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900">Sign in to NexusFlow</h2>
-          <p className="text-slate-500 text-sm mt-1">Manage your organization efficiently</p>
+      <div className={`text-center ${isDropdown ? "p-6 border-b border-slate-50 mb-6 bg-slate-50/50" : "mb-8"}`}>
+        <h2 className="text-xl font-black text-slate-900 tracking-tight">Access NexusFlow</h2>
+        <p className="text-slate-500 text-xs mt-1 font-bold">Synchronize your enterprise</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className={`space-y-4 ${isDropdown ? "px-6 pb-6" : ""}`}>
+        <div>
+          <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Email</label>
+          <input
+            type="email"
+            className="input-field"
+            placeholder="you@enterprise.com"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Password</label>
+          <input
+            type="password"
+            className="input-field"
+            placeholder="••••••••"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            required
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">Email Address</label>
-            <input
-              type="email"
-              className="input-field"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              required
-            />
+        {error && (
+          <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-xs font-bold">
+            {error}
           </div>
-          <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">Password</label>
-            <input
-              type="password"
-              className="input-field"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              required
-            />
-          </div>
+        )}
 
-          {error && (
-            <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-rose-600 text-sm font-medium">
-              {error}
-            </div>
-          )}
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn-primary w-full py-4 text-sm font-black uppercase tracking-widest shadow-xl shadow-indigo-100"
+        >
+          {loading ? "Verifying..." : "Enter Workspace"}
+        </button>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full py-3.5 text-base"
-          >
-            {loading ? "Authenticating..." : "Sign In"}
-          </button>
-        </form>
-
-        <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-          <p className="text-slate-500 text-sm">
-            Don't have an account?{" "}
+        <div className="pt-4 text-center">
+          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-loose">
+            Locked Out? <br />
             <button
               onClick={onSwitchToRegister}
-              className="text-indigo-600 font-bold hover:underline"
+              className="text-indigo-600 hover:underline"
             >
-              Get started
+              Create a new organization
             </button>
           </p>
         </div>
-      </div>
+      </form>
+    </div>
+  );
+
+  if (isDropdown) return content;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()}>{content}</div>
     </div>
   );
 }

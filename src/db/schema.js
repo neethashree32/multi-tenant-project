@@ -29,12 +29,6 @@ export const eventStatusEnum = pgEnum("event_status", [
   "completed",
   "cancelled",
 ]);
-export const complaintStatusEnum = pgEnum("complaint_status", [
-  "open",
-  "in_review",
-  "resolved",
-  "dismissed",
-]);
 export const auditActionEnum = pgEnum("audit_action", [
   "created",
   "updated",
@@ -133,29 +127,6 @@ export const eventAttendees = pgTable("event_attendees", {
   joinedAt: timestamp("joined_at").defaultNow().notNull(),
 });
 
-// Complaints table
-export const complaints = pgTable("complaints", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  status: complaintStatusEnum("status").notNull().default("open"),
-  organizationId: uuid("organization_id")
-    .notNull()
-    .references(() => organizations.id, { onDelete: "cascade" }),
-  submittedById: uuid("submitted_by_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  response: text("response"),
-  respondedById: uuid("responded_by_id").references(() => users.id, {
-    onDelete: "set null",
-  }),
-  respondedAt: timestamp("responded_at"),
-  targetRole: text("target_role").notNull().default("organization"),
-  isAnonymous: boolean("is_anonymous").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
 // Task Audit Log
 export const taskAuditLogs = pgTable("task_audit_logs", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -180,7 +151,6 @@ export const organizationsRelations = relations(organizations, ({ many }) => ({
   users: many(users),
   tasks: many(tasks),
   events: many(events),
-  complaints: many(complaints),
   taskAuditLogs: many(taskAuditLogs),
 }));
 
@@ -193,7 +163,6 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   assignedTasks: many(tasks, { relationName: "taskAssignee" }),
   createdEvents: many(events),
   eventAttendees: many(eventAttendees),
-  complaints: many(complaints, { relationName: "complaintSubmitter" }),
   auditLogs: many(taskAuditLogs),
 }));
 
@@ -235,23 +204,6 @@ export const eventAttendeesRelations = relations(eventAttendees, ({ one }) => ({
   user: one(users, {
     fields: [eventAttendees.userId],
     references: [users.id],
-  }),
-}));
-
-export const complaintsRelations = relations(complaints, ({ one }) => ({
-  organization: one(organizations, {
-    fields: [complaints.organizationId],
-    references: [organizations.id],
-  }),
-  submittedBy: one(users, {
-    fields: [complaints.submittedById],
-    references: [users.id],
-    relationName: "complaintSubmitter",
-  }),
-  respondedBy: one(users, {
-    fields: [complaints.respondedById],
-    references: [users.id],
-    relationName: "complaintResponder",
   }),
 }));
 
