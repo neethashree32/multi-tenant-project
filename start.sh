@@ -3,7 +3,7 @@ set -e
 
 export PATH="$PATH:/usr/lib/postgresql/15/bin"
 
-echo "=== Permify Startup ==="
+echo "=== NexusFlow Startup ==="
 
 # Start PostgreSQL
 echo "Starting PostgreSQL..."

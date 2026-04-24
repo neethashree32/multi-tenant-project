@@ -20,11 +20,6 @@ EXCEPTION WHEN duplicate_object THEN null;
 END $$;
 
 DO $$ BEGIN
-  CREATE TYPE complaint_status AS ENUM ('open', 'in_review', 'resolved', 'dismissed');
-EXCEPTION WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
   CREATE TYPE audit_action AS ENUM ('created', 'updated', 'deleted', 'assigned', 'status_changed', 'completed');
 EXCEPTION WHEN duplicate_object THEN null;
 END $$;
@@ -103,23 +98,6 @@ CREATE TABLE IF NOT EXISTS event_attendees (
   joined_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
--- Complaints table
-CREATE TABLE IF NOT EXISTS complaints (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title TEXT NOT NULL,
-  description TEXT NOT NULL,
-  status complaint_status NOT NULL DEFAULT 'open',
-  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
-  submitted_by_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  response TEXT,
-  responded_by_id UUID REFERENCES users(id) ON DELETE SET NULL,
-  responded_at TIMESTAMP,
-  target_role TEXT DEFAULT 'organization' NOT NULL,
-  is_anonymous BOOLEAN DEFAULT false NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW() NOT NULL,
-  updated_at TIMESTAMP DEFAULT NOW() NOT NULL
-);
-
 -- Task Audit Logs table
 CREATE TABLE IF NOT EXISTS task_audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -140,7 +118,6 @@ CREATE INDEX IF NOT EXISTS idx_tasks_org ON tasks(organization_id);
 CREATE INDEX IF NOT EXISTS idx_tasks_created_by ON tasks(created_by_id);
 CREATE INDEX IF NOT EXISTS idx_tasks_assigned_to ON tasks(assigned_to_id);
 CREATE INDEX IF NOT EXISTS idx_events_org ON events(organization_id);
-CREATE INDEX IF NOT EXISTS idx_complaints_org ON complaints(organization_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_task ON task_audit_logs(task_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_org ON task_audit_logs(organization_id);
 
@@ -150,25 +127,25 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_org ON task_audit_logs(organization_id
 
 DO $$ 
 DECLARE
-  org_id UUID := '4aae5727-0e65-4c95-91cd-d069f718c245';
-  admin1_id UUID := '3caa0037-ef67-4a9d-8221-64050f501e0a';
-  admin2_id UUID := 'fed87ae6-d7ab-436f-83a0-c65585aad255';
-  member1_id UUID := '9ed3c61a-7281-416c-9388-b6c9cfa9e849';
-  member2_id UUID := '77f0ccbf-c0a7-4b74-8c3c-61bdf115a8da';
-  member3_id UUID := '206c9a91-2434-4077-823f-d1c3682536b2';
-  member4_id UUID := 'b6461cf5-6e1a-4ff5-b92c-a9141d44489b';
-  member5_id UUID := '579dbaa8-804b-4f60-af87-b6c0922785ed';
-  member6_id UUID := '39fb12ee-807f-472c-9cf6-c544e03036be';
-  member7_id UUID := '53f1328b-7eb0-4258-a81d-1a86d901f332';
+  org_id UUID := '1d57865f-dbef-447f-a26e-457a3e12a17a';
+  admin1_id UUID := 'a671fd9f-d638-46eb-a687-94f04c65150a';
+  admin2_id UUID := '986af5ce-ef63-459f-94c1-eab49c1a6009';
+  member1_id UUID := '6d4779a0-8cfd-46eb-aabe-bc0bb2e606fc';
+  member2_id UUID := '2b0f7b3a-a9b2-46ec-8ad9-7393feb159d5';
+  member3_id UUID := '99c32c64-44f9-4829-9aac-ada42aec49a4';
+  member4_id UUID := 'e670ccdf-4ec7-49bf-8611-a0609fa80282';
+  member5_id UUID := '6f8e803a-4786-4252-b35a-e696a9ebf887';
+  member6_id UUID := '9a01305e-d41c-410c-8257-2224423740c9';
+  member7_id UUID := '4b83df4e-4735-404e-9e68-7df8bf19bf8c';
   
-  task1_id UUID := '5130553f-7bb2-423a-b51d-de32c0432559';
-  task2_id UUID := '3e9e51a2-d636-4810-934e-6729afab0edb';
-  task3_id UUID := '7ba932fe-a9c0-42ff-9d45-3460200ce891';
-  task4_id UUID := 'c60ca530-5380-4275-aad7-ef0744385e05';
-  task5_id UUID := '5b396c3a-0506-4acb-a9a1-1a04ec98722c';
+  task1_id UUID := 'be3428da-a741-42e5-8a91-c24cecef66be';
+  task2_id UUID := '200f4aa8-57a1-49bb-bd51-93f2ffb06260';
+  task3_id UUID := 'cd60a593-c559-481e-8b93-13157fa7850e';
+  task4_id UUID := 'e1a788ed-a569-4053-887a-b4a93d0190fd';
+  task5_id UUID := '4a3d5c75-d7b8-4d5a-912d-c4fc5d01341a';
   
-  event1_id UUID := '1f4b2d1d-2b50-4fd0-b0c7-cf3fc4c8c0bf';
-  event2_id UUID := '4a53aed6-0d90-47cc-adae-f8733d1321d2';
+  event1_id UUID := 'b8f986fd-e8ff-4e0a-a577-d9d3b16c5b9d';
+  event2_id UUID := '649ac754-ffd5-4aab-a3f4-1709b37057c6';
 BEGIN
 
 -- Insert Organization (1)
@@ -182,26 +159,26 @@ END IF;
 -- Insert Admins (2)
 INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
 VALUES 
-(admin1_id, 'Alice Admin', 'admin1@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'admin', org_id, true),
-(admin2_id, 'Bob Boss', 'admin2@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'admin', org_id, true)
+(admin1_id, 'Alice Admin', 'admin1@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'admin', org_id, true),
+(admin2_id, 'Bob Boss', 'admin2@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'admin', org_id, true)
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert Members (7)
 INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
 VALUES 
-(member1_id, 'Charlie Carter', 'member1@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'member', org_id, true),
-(member2_id, 'Diana Davidson', 'member2@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'member', org_id, true),
-(member3_id, 'Ethan Edwards', 'member3@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'member', org_id, true),
-(member4_id, 'Fiona Foster', 'member4@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'member', org_id, true),
-(member5_id, 'George Grant', 'member5@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'member', org_id, true),
-(member6_id, 'Hannah Hughes', 'member6@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'member', org_id, true),
-(member7_id, 'Ian Irvine', 'member7@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'member', org_id, true)
+(member1_id, 'Charlie Carter', 'member1@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
+(member2_id, 'Diana Davidson', 'member2@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
+(member3_id, 'Ethan Edwards', 'member3@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
+(member4_id, 'Fiona Foster', 'member4@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
+(member5_id, 'George Grant', 'member5@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
+(member6_id, 'Hannah Hughes', 'member6@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
+(member7_id, 'Ian Irvine', 'member7@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true)
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert Organization Owner Account (1) mapped to same Org ID
 INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
 VALUES 
-('2d1e78d0-2625-4281-a0e9-df55f4e4a542', 'Acme Corp', 'org@acme.com', '$2b$10$CmN6Amu3MufY1YPoQ1DzWeEWry/He6.9j1C4hZsUA2mUTBoQKfWaq', 'organization', org_id, true)
+('ab013436-14f0-4adf-8aa8-e5d20dfc390c', 'Acme Corp', 'org@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'organization', org_id, true)
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert Demo Tasks
