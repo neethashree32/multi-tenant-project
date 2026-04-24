@@ -9,12 +9,14 @@ const navItems = {
     { href: "/dashboard/tasks", label: "Tasks", icon: "📋" },
     { href: "/dashboard/events", label: "Events", icon: "🎪" },
     { href: "/dashboard/members", label: "Members", icon: "💠" },
+    { href: "/dashboard/feedback", label: "Feedback", icon: "📨" },
   ],
   admin: [
     { href: "/dashboard", label: "Overview", icon: "🏠" },
     { href: "/dashboard/tasks", label: "Tasks", icon: "📋" },
     { href: "/dashboard/events", label: "Events", icon: "🎪" },
     { href: "/dashboard/members", label: "Members", icon: "💠" },
+    { href: "/dashboard/feedback", label: "Feedback", icon: "📨" },
   ],
   member: [
     { href: "/dashboard", label: "Overview", icon: "🏠" },
@@ -41,8 +43,8 @@ export default function TopBar({ user }) {
               key={item.href}
               href={item.href}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${isActive
-                  ? "bg-slate-900 text-white shadow-lg"
-                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                ? "bg-slate-900 text-white shadow-lg"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 }`}
             >
               <span className="text-base">{item.icon}</span>

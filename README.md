@@ -23,43 +23,28 @@ pinned: false
 -   **🛡️ Audit Intelligence**: Comprehensive logging of all critical actions for transparency and compliance.
 -   **🐳 Cloud Native**: Fully containerized with Docker, ready for instant deployment to any cloud provider.
 
-## 🚀 Tech Stack
+## 🚀 Demo Accounts
+
+Use the following credentials to explore the NexusFlow ecosystem. All accounts use the password: `Password123!`
+
+| Role | Email | Purpose |
+| :--- | :--- | :--- |
+| **🏢 Organization** | `org@nexusflow.com` | Full control, view analytics, and feedback. |
+| **👑 Admin** | `admin1@nexusflow.com` | Manage team, tasks, and view feedback. |
+| **👑 Admin** | `admin2@nexusflow.com` | Secondary administrative access. |
+| **👤 Member** | `member1@nexusflow.com` | Workspace access and feedback submission. |
+| **👤 Member** | `member2@nexusflow.com` | ... (up to 12 members) |
+
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 | :--- | :--- |
 | **Frontend** | Next.js 16 (App Router), React 19 |
-| **Styling** | TailwindCSS 4, Custom Glassmorphism UI |
+| **Styling** | TailwindCSS 4, Custom Light Design |
 | **Backend** | Next.js API Routes (Serverless ready) |
 | **Database** | PostgreSQL + Drizzle ORM |
 | **Auth** | JWT (jose) |
 | **Deployment** | Docker, Hugging Face Spaces |
-
-## 🛠️ Getting Started
-
-### Local Development
-
-1.  **Clone the repository**
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
-3.  **Configure environment**: Create a `.env` file with your `DATABASE_URL`.
-4.  **Launch dev server**:
-    ```bash
-    npm run dev
-    ```
-
-### Production Deployment
-
-NexusFlow is pre-configured for Docker:
-
-```bash
-docker-compose up --build
-```
-
-## 📬 Support & Feedback
-
-For any inquiries or feedback regarding NexusFlow, please reach out via the Hugging Face Space discussion board.
 
 ---
 

@@ -65,9 +65,6 @@ export const users = pgTable("users", {
   position: text("position"),
   bio: text("bio"),
   avatarUrl: text("avatar_url"),
-  // OAuth fields
-  oauthProvider: text("oauth_provider"),
-  oauthId: text("oauth_id"),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -127,6 +124,21 @@ export const eventAttendees = pgTable("event_attendees", {
   joinedAt: timestamp("joined_at").defaultNow().notNull(),
 });
 
+// Feedbacks table
+export const feedbacks = pgTable("feedbacks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  content: text("content").notNull(),
+  category: text("category").notNull(),
+  rating: text("rating").notNull(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Task Audit Log
 export const taskAuditLogs = pgTable("task_audit_logs", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -151,6 +163,7 @@ export const organizationsRelations = relations(organizations, ({ many }) => ({
   users: many(users),
   tasks: many(tasks),
   events: many(events),
+  feedbacks: many(feedbacks),
   taskAuditLogs: many(taskAuditLogs),
 }));
 
@@ -162,6 +175,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   createdTasks: many(tasks, { relationName: "taskCreator" }),
   assignedTasks: many(tasks, { relationName: "taskAssignee" }),
   createdEvents: many(events),
+  feedbacks: many(feedbacks),
   eventAttendees: many(eventAttendees),
   auditLogs: many(taskAuditLogs),
 }));
@@ -182,6 +196,17 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
     relationName: "taskAssignee",
   }),
   auditLogs: many(taskAuditLogs),
+}));
+
+export const feedbacksRelations = relations(feedbacks, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [feedbacks.organizationId],
+    references: [organizations.id],
+  }),
+  user: one(users, {
+    fields: [feedbacks.userId],
+    references: [users.id],
+  }),
 }));
 
 export const eventsRelations = relations(events, ({ one, many }) => ({

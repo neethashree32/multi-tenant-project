@@ -51,8 +51,6 @@ CREATE TABLE IF NOT EXISTS users (
   position TEXT,
   bio TEXT,
   avatar_url TEXT,
-  oauth_provider TEXT,
-  oauth_id TEXT,
   is_active BOOLEAN DEFAULT true NOT NULL,
   created_at TIMESTAMP DEFAULT NOW() NOT NULL,
   updated_at TIMESTAMP DEFAULT NOW() NOT NULL
@@ -98,6 +96,17 @@ CREATE TABLE IF NOT EXISTS event_attendees (
   joined_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
+-- Feedbacks table
+CREATE TABLE IF NOT EXISTS feedbacks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  content TEXT NOT NULL,
+  category TEXT NOT NULL,
+  rating TEXT NOT NULL,
+  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
+
 -- Task Audit Logs table
 CREATE TABLE IF NOT EXISTS task_audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -115,95 +124,98 @@ CREATE TABLE IF NOT EXISTS task_audit_logs (
 CREATE INDEX IF NOT EXISTS idx_users_org ON users(organization_id);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_tasks_org ON tasks(organization_id);
-CREATE INDEX IF NOT EXISTS idx_tasks_created_by ON tasks(created_by_id);
-CREATE INDEX IF NOT EXISTS idx_tasks_assigned_to ON tasks(assigned_to_id);
 CREATE INDEX IF NOT EXISTS idx_events_org ON events(organization_id);
+CREATE INDEX IF NOT EXISTS idx_feedbacks_org ON feedbacks(organization_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_task ON task_audit_logs(task_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_org ON task_audit_logs(organization_id);
 
 -- ============================================
--- Seeding Demo Data (Idempotent)
+-- Seeding 15 Demo Accounts & Data
 -- ============================================
 
 DO $$ 
 DECLARE
-  org_id UUID := '1d57865f-dbef-447f-a26e-457a3e12a17a';
-  admin1_id UUID := 'a671fd9f-d638-46eb-a687-94f04c65150a';
-  admin2_id UUID := '986af5ce-ef63-459f-94c1-eab49c1a6009';
-  member1_id UUID := '6d4779a0-8cfd-46eb-aabe-bc0bb2e606fc';
-  member2_id UUID := '2b0f7b3a-a9b2-46ec-8ad9-7393feb159d5';
-  member3_id UUID := '99c32c64-44f9-4829-9aac-ada42aec49a4';
-  member4_id UUID := 'e670ccdf-4ec7-49bf-8611-a0609fa80282';
-  member5_id UUID := '6f8e803a-4786-4252-b35a-e696a9ebf887';
-  member6_id UUID := '9a01305e-d41c-410c-8257-2224423740c9';
-  member7_id UUID := '4b83df4e-4735-404e-9e68-7df8bf19bf8c';
-  
-  task1_id UUID := 'be3428da-a741-42e5-8a91-c24cecef66be';
-  task2_id UUID := '200f4aa8-57a1-49bb-bd51-93f2ffb06260';
-  task3_id UUID := 'cd60a593-c559-481e-8b93-13157fa7850e';
-  task4_id UUID := 'e1a788ed-a569-4053-887a-b4a93d0190fd';
-  task5_id UUID := '4a3d5c75-d7b8-4d5a-912d-c4fc5d01341a';
-  
-  event1_id UUID := 'b8f986fd-e8ff-4e0a-a577-d9d3b16c5b9d';
-  event2_id UUID := '649ac754-ffd5-4aab-a3f4-1709b37057c6';
+  org_id UUID := '4633c146-d87f-430f-8cad-0c6e8e62f8fb';
+  admin1_id UUID := '8e462394-d694-4226-ad71-ee6662bea8db';
+  admin2_id UUID := 'bb9b0875-41c5-4411-9a6e-7e1a6c6f4fea';
 BEGIN
 
--- Insert Organization (1)
-IF NOT EXISTS (SELECT 1 FROM organizations WHERE name = 'Acme Corp') THEN
+-- 1. Insert Organization
+IF NOT EXISTS (SELECT 1 FROM organizations WHERE name = 'NexusFlow Corp') THEN
   INSERT INTO organizations (id, name, description) 
-  VALUES (org_id, 'Acme Corp', 'A highly dynamic and fast-paced startup.');
+  VALUES (org_id, 'NexusFlow Corp', 'Lead the flow with NexusFlow Infrastructure.');
 ELSE
-  SELECT id INTO org_id FROM organizations WHERE name = 'Acme Corp';
+  SELECT id INTO org_id FROM organizations WHERE name = 'NexusFlow Corp';
 END IF;
 
--- Insert Admins (2)
+-- 2. Insert Organization Owner Account
 INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
-VALUES 
-(admin1_id, 'Alice Admin', 'admin1@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'admin', org_id, true),
-(admin2_id, 'Bob Boss', 'admin2@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'admin', org_id, true)
+VALUES ('d17e4fd8-8573-4763-9567-d211d1c28c35', 'NexusFlow Corp Owner', 'org@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'organization', org_id, true)
 ON CONFLICT (email) DO NOTHING;
 
--- Insert Members (7)
-INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
-VALUES 
-(member1_id, 'Charlie Carter', 'member1@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
-(member2_id, 'Diana Davidson', 'member2@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
-(member3_id, 'Ethan Edwards', 'member3@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
-(member4_id, 'Fiona Foster', 'member4@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
-(member5_id, 'George Grant', 'member5@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
-(member6_id, 'Hannah Hughes', 'member6@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true),
-(member7_id, 'Ian Irvine', 'member7@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'member', org_id, true)
+-- 3. Insert 2 Admins
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active) VALUES
+(admin1_id, 'Sarah Admin', 'admin1@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'admin', org_id, true),
+(admin2_id, 'James Admin', 'admin2@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'admin', org_id, true)
 ON CONFLICT (email) DO NOTHING;
 
--- Insert Organization Owner Account (1) mapped to same Org ID
+-- 4. Insert 12 Members
 INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
-VALUES 
-('ab013436-14f0-4adf-8aa8-e5d20dfc390c', 'Acme Corp', 'org@acme.com', '$2b$10$fXIjzlC.eskwRT7Eg15B.OpaS6hV8r1eYfLfTndJ4zsLmPN9E.aYe', 'organization', org_id, true)
+VALUES ('4f0b0acc-6700-4bf2-8762-33e488e2f37c', 'Liam Miller', 'member1@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('3c445aa2-b0e2-42f2-bef4-744cc00437cc', 'Noah Davis', 'member2@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('e96f699b-31b7-4b57-9dab-d7cacd90b8b0', 'Oliver Garcia', 'member3@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('716e8b05-73b3-4648-93f4-90e506ac1641', 'Elijah Rodriguez', 'member4@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('dfa37d3d-5cfc-48ef-bea8-c6cdc296ddcb', 'Lucas Wilson', 'member5@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('547e230d-9cbb-49b0-b580-fdc4f10ee126', 'Mason Anderson', 'member6@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('11200896-6d8e-47ee-9e97-463091abdbb2', 'Logan Taylor', 'member7@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('7f50e38f-8b38-4980-9a1c-37d846d4fe99', 'Ethan Moore', 'member8@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('c038e7c7-d30e-4814-a9f8-47218bd62500', 'Aiden Jackson', 'member9@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('869e0734-b67c-4067-9da2-0e27f4131c69', 'Hudson White', 'member10@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('3924ef1c-2523-4b32-a758-c1f3c799266b', 'Sebastian Kelly', 'member11@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO users (id, name, email, password_hash, role, organization_id, is_active)
+VALUES ('81d98353-eb83-4618-9763-a908aaa7cf7a', 'Jack Brooks', 'member12@nexusflow.com', '$2b$10$D5J5.b7aDwRn0MbHnqF4ee9zCuO4C/Pp.CcZHHThUrKlOMnHZOwY.', 'member', org_id, true)
 ON CONFLICT (email) DO NOTHING;
 
--- Insert Demo Tasks
-IF NOT EXISTS (SELECT 1 FROM tasks WHERE title = 'Deploy v2.0 to Production') THEN
-  INSERT INTO tasks (id, title, description, status, priority, organization_id, created_by_id, assigned_to_id, due_date)
-  VALUES 
-  (task1_id, 'Deploy v2.0 to Production', 'Ensure all staging tests pass before pushing.', 'in_progress', 'high', org_id, admin1_id, member1_id, NOW() + INTERVAL '2 days'),
-  (task2_id, 'Design new Landing Page', 'Update the UI to a modern light theme.', 'done', 'medium', org_id, admin2_id, member2_id, NOW() - INTERVAL '1 day'),
-  (task3_id, 'Fix Login Middleware Bug', 'Users are being redirected wrongly. Fix auth token cookies.', 'todo', 'urgent', org_id, admin1_id, member3_id, NOW() + INTERVAL '1 day'),
-  (task4_id, 'Prepare Q3 Financial Report', 'Gather all analytics data across the multitenant system.', 'todo', 'high', org_id, admin2_id, member4_id, NOW() + INTERVAL '5 days'),
-  (task5_id, 'Onboard New Employees', 'Setup equipment and accounts for new hires.', 'in_progress', 'low', org_id, admin1_id, member5_id, NOW() + INTERVAL '7 days');
-END IF;
+-- 5. Insert Sample Tasks
+INSERT INTO tasks (title, description, status, priority, organization_id, created_by_id, assigned_to_id, due_date) VALUES
+('System Infrastructure Audit', 'Perform a full security sweep of the NexusFlow cluster.', 'in_progress', 'high', org_id, admin1_id, '4f0b0acc-6700-4bf2-8762-33e488e2f37c', NOW() + INTERVAL '3 days'),
+('UI Localization', 'Translate the dashboard into 5 new languages.', 'todo', 'medium', org_id, admin2_id, '3c445aa2-b0e2-42f2-bef4-744cc00437cc', NOW() + INTERVAL '7 days'),
+('Database Migration', 'Optimize the PostgreSQL indexing for multi-tenant scaling.', 'done', 'urgent', org_id, admin1_id, 'e96f699b-31b7-4b57-9dab-d7cacd90b8b0', NOW() - INTERVAL '1 day'),
+('Feature: Real-time Comms', 'Implement WebSocket support for task notifications.', 'todo', 'high', org_id, admin2_id, '716e8b05-73b3-4648-93f4-90e506ac1641', NOW() + INTERVAL '10 days'),
+('API Documentation', 'Update Swagger docs with the new multi-tenant endpoints.', 'in_progress', 'low', org_id, admin1_id, 'dfa37d3d-5cfc-48ef-bea8-c6cdc296ddcb', NOW() + INTERVAL '5 days');
 
--- Insert Demo Events
-IF NOT EXISTS (SELECT 1 FROM events WHERE title = 'Q3 All Hands Meeting') THEN
-  INSERT INTO events (id, title, description, location, status, organization_id, created_by_id, start_date, end_date)
-  VALUES 
-  (event1_id, 'Q3 All Hands Meeting', 'Company wide sync to discuss roadmap and accomplishments.', 'Virtual - Zoom', 'upcoming', org_id, admin1_id, NOW() + INTERVAL '3 days', NOW() + INTERVAL '3 days 2 hours'),
-  (event2_id, 'Team Building Retreat', 'Annual getaway to boost team morale.', 'Lake Tahoe Cabin', 'upcoming', org_id, admin2_id, NOW() + INTERVAL '14 days', NOW() + INTERVAL '16 days');
+-- 6. Insert Sample Events
+INSERT INTO events (title, description, location, status, organization_id, created_by_id, start_date, end_date) VALUES
+('Quarterly Strategy Sync', 'Alignment on NexusFlow H2 roadmap.', 'Main Hall A', 'upcoming', org_id, admin1_id, NOW() + INTERVAL '2 days', NOW() + INTERVAL '2 days 4 hours'),
+('Team Building Workshop', 'Interactive sessions to boost cross-tenant collaboration.', 'Beachfront Resort', 'upcoming', org_id, admin2_id, NOW() + INTERVAL '15 days', NOW() + INTERVAL '16 days');
 
-  -- Add Attendees
-  INSERT INTO event_attendees (event_id, user_id)
-  VALUES 
-  (event1_id, admin1_id), (event1_id, admin2_id), (event1_id, member1_id), (event1_id, member2_id), (event1_id, member3_id), (event1_id, member4_id),
-  (event2_id, admin2_id), (event2_id, member5_id), (event2_id, member6_id), (event2_id, member7_id);
-END IF;
+-- 7. Insert Sample Feedbacks from Members
+INSERT INTO feedbacks (content, category, rating, organization_id, user_id) VALUES
+('The new light theme is very clean and faster to use!', 'UI/UX', '🤩', org_id, '4f0b0acc-6700-4bf2-8762-33e488e2f37c'),
+('Need more task status filters in the overview.', 'Feature Request', '🙂', org_id, '3c445aa2-b0e2-42f2-bef4-744cc00437cc'),
+('Experienced some lag when switching between events.', 'Performance', '😐', org_id, 'e96f699b-31b7-4b57-9dab-d7cacd90b8b0'),
+('The sidebar layout is much more intuitive now.', 'UI/UX', '🤩', org_id, '716e8b05-73b3-4648-93f4-90e506ac1641'),
+('Would love to have an automated report generator.', 'Feature Request', '🙂', org_id, 'dfa37d3d-5cfc-48ef-bea8-c6cdc296ddcb');
 
 END $$;
