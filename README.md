@@ -2,7 +2,7 @@
 title: NexusFlow - Multi-Tenant Infrastructure
 emoji: 🌊
 colorFrom: indigo
-colorTo: violet
+colorTo: purple
 sdk: docker
 pinned: false
 ---
